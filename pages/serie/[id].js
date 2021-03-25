@@ -84,7 +84,7 @@ export async function getStaticProps({ params }) {
     }
 }
 
-export async function getStaticPaths({ params }) {
+export async function getStaticPaths() {
     const series = await getAllSeriesFromApi()
         .then(r => r)
 

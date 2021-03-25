@@ -6,13 +6,6 @@ import CardActor from '../../components/cardActor'
 import styled from 'styled-components'
 import moment from 'moment'
 
-const useStyles = makeStyles({
-    container: {
-        display: "flex"
-    },
-})
-
-
 const Container = styled.div`
     display: flex;
     flex-direction: row;
@@ -23,7 +16,6 @@ const SubContainer = styled.div`
 `
 
 export default function Film({ film, credit }) {
-    const classes = useStyles();
 
     const [genres, setGenres] = useState([])
     useEffect(() => {
@@ -99,7 +91,7 @@ export async function getStaticProps({ params }) {
 }
 
 
-export async function getStaticPaths({ params }) {
+export async function getStaticPaths() {
     const films = await getAllFilmsFromApi()
         .then(r => r)
 

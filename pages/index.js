@@ -7,13 +7,6 @@ import HomeFilm from '../components/homeFilm'
 import HomeSerie from '../components/homeSerie';
 import SearchTab from '../components/searchTab';
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-		backgroundColor: theme.palette.background.paper,
-	},
-}));
-
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
 
@@ -35,7 +28,6 @@ function TabPanel(props) {
 }
 
 export default function Home() {
-	const classes = useStyles();
 	const [value, setValue] = React.useState(0);
 
 	const handleChange = (event, newValue) => {
