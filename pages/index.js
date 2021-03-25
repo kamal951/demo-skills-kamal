@@ -1,65 +1,70 @@
+import React from 'react'
+
+import { AppBar, Box, makeStyles, Tab, Tabs } from '@material-ui/core';
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Header from '../components/header'
+import HomeFilm from '../components/homeFilm'
+import HomeSerie from '../components/homeSerie';
+import SearchTab from '../components/searchTab';
+
+const useStyles = makeStyles((theme) => ({
+	root: {
+		flexGrow: 1,
+		backgroundColor: theme.palette.background.paper,
+	},
+}));
+
+function TabPanel(props) {
+	const { children, value, index, ...other } = props;
+
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+				<Box p={3}>
+					{children}
+				</Box>
+			)}
+		</div>
+	);
+}
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+	const classes = useStyles();
+	const [value, setValue] = React.useState(0);
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+	};
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+	return (
+		<div>
+			<Head>
+				<title>Demo Skills Kamal</title>
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+			<Header />
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+			<AppBar position="static">
+				<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+					<Tab label="Films" id="simple-tab-1" aria-controls="simple-tabpanel-1" />
+					<Tab label="Series" id="simple-tab-2" aria-controls="simple-tabpanel-2" />
+					<Tab label="Search" id="simple-tab-3" aria-controls="simple-tabpanel-3" />
+				</Tabs>
+			</AppBar>
+			<TabPanel value={value} index={0}><HomeFilm /></TabPanel>
+			<TabPanel value={value} index={1}><HomeSerie /> </TabPanel>
+			<TabPanel value={value} index={2}><SearchTab /> </TabPanel>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+			<footer>
+				Kamal
+			</footer>
+		</div>
+	)
 }
