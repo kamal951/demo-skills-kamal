@@ -8,6 +8,14 @@ import Link from 'next/link';
 
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import { Button, Grid, Tooltip } from '@material-ui/core';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { connect, useSelector } from 'react-redux';
+import { favorite, watchlist } from '../redux/actions/userAction';
+import { useDispatch } from 'react-redux';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles({
     root: {
@@ -33,8 +41,12 @@ const useStyles = makeStyles({
     },
 });
 
-export default function CardMovie(props) {
+const CardMovie = props => {
     const classes = useStyles();
+    const user = useSelector(state => state.userReducer.user)
+    const watchList = useSelector(state => state.userReducer.movieWatchlist)
+    const fav = useSelector(state => state.userReducer.fav)
+    const dispatch = useDispatch()
 
     return (
         <>
@@ -45,13 +57,46 @@ export default function CardMovie(props) {
                         image={"https://image.tmdb.org/t/p/w300" + props.detail.backdrop_path}
                         title="img film"
                     />
-                    <Typography className={classes.title} color="textPrimary" gutterBottom>
-                        {props.detail.original_title}
-                    </Typography>
-                    <Typography className={classes.date} color="textSecondary" gutterBottom>
-                        {moment(props.detail.release_date).format("DD MMM YYYY")}
-                    </Typography>
-                    <Chip label={props.detail.vote_average * 10 + "%"} />
+                    <Grid container>
+
+                        <Grid item md={8}>
+                            <Typography className={classes.title} color="textPrimary" gutterBottom>
+                                {props.detail.original_title}
+                            </Typography>
+                            <Typography className={classes.date} color="textSecondary" gutterBottom>
+                                {moment(props.detail.release_date).format("DD MMM YYYY")}
+                            </Typography>
+                            <Chip label={props.detail.vote_average * 10 + "%"} />
+                        </Grid>
+                        {user.success !== undefined ?
+                            <>
+                                <Grid item md={2}>
+                                    {
+                                        fav.findIndex(item => item.id === props.detail.id) !== -1 ?
+                                            <Tooltip title="Like">
+                                                <Button onClick={() => { dispatch(favorite(user, props.detail)) }}><FavoriteIcon /></Button>
+                                            </Tooltip> :
+                                            <Tooltip title="Unlike">
+                                                <Button onClick={() => { dispatch(favorite(user, props.detail)) }}><FavoriteBorderIcon /></Button>
+                                            </Tooltip>
+                                    }
+                                </Grid>
+                                <Grid item md={2}>
+
+                                    {
+                                        watchList.findIndex(item => item.id === props.detail.id) !== -1 ?
+                                            <Tooltip title="Remove from watchlist">
+                                                <Button onClick={() => dispatch(watchlist(user, props.detail))}><VisibilityOffIcon /></Button>
+                                            </Tooltip> :
+                                            <Tooltip title="Add to watchlist">
+                                                <Button onClick={() => dispatch(watchlist(user, props.detail))}><VisibilityIcon /></Button>
+                                            </Tooltip>
+                                    }
+
+                                </Grid>
+                            </> : null
+                        }
+                    </Grid>
                 </CardContent>
                 <CardActions>
                     <Link href={"/film/" + props.detail.id}>
@@ -64,3 +109,5 @@ export default function CardMovie(props) {
         </>
     )
 }
+
+export default connect(({ movieWatchlist }) => ({ movieWatchlist }), { watchlist })(CardMovie);

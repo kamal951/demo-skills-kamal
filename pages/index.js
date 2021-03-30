@@ -6,6 +6,8 @@ import Header from '../components/header'
 import HomeFilm from '../components/homeFilm'
 import HomeSerie from '../components/homeSerie';
 import SearchTab from '../components/searchTab';
+import { WatchlistTab } from '../components/watchlistTab';
+import { LikesTab } from '../components/likesTab';
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -48,11 +50,15 @@ export default function Home() {
 					<Tab label="Films" id="simple-tab-1" aria-controls="simple-tabpanel-1" />
 					<Tab label="Series" id="simple-tab-2" aria-controls="simple-tabpanel-2" />
 					<Tab label="Search" id="simple-tab-3" aria-controls="simple-tabpanel-3" />
+					<Tab label="Watchlist" id="simple-tab-4" aria-controls="simple-tabpanel-4" />
+					<Tab label="Likes" id="simple-tab-5" aria-controls="simple-tabpanel-5" />
 				</Tabs>
 			</AppBar>
 			<TabPanel value={value} index={0}><HomeFilm /></TabPanel>
 			<TabPanel value={value} index={1}><HomeSerie /> </TabPanel>
 			<TabPanel value={value} index={2}><SearchTab /> </TabPanel>
+			<TabPanel value={value} index={3}><WatchlistTab /> </TabPanel>
+			<TabPanel value={value} index={4}><LikesTab /> </TabPanel>
 
 			<footer>
 				Kamal

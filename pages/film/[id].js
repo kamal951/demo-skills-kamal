@@ -1,10 +1,20 @@
-import { Grid, makeStyles } from '@material-ui/core'
+import { Button, Grid, makeStyles, Tooltip } from '@material-ui/core'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { getFilmByIdFromApi, getFilmCredit, getAllFilmsFromApi, getGenresFilmById } from '../../api'
 import CardActor from '../../components/cardActor'
 import styled from 'styled-components'
 import moment from 'moment'
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { useDispatch, useSelector } from 'react-redux'
+import { favorite, rateMovie, watchlist } from '../../redux/actions/userAction'
+import { Rating } from '@material-ui/lab'
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import Header from '../../components/header'
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
 
 const Container = styled.div`
     display: flex;
@@ -34,8 +44,16 @@ export default function Film({ film, credit }) {
     }, [])
 
 
+    const user = useSelector(state => state.userReducer.user)
+    const rates = useSelector(state => state.userReducer.rates)
+    const watchList = useSelector(state => state.userReducer.movieWatchlist)    
+    const fav = useSelector(state => state.userReducer.fav)
+
+    const dispatch = useDispatch()
+
     return (
         <>
+            <Header />
             <div style={{ marginLeft: "50px", marginTop: "20px" }}>
                 <Link href="/" >
                     <a >
@@ -51,7 +69,57 @@ export default function Film({ film, credit }) {
                 </div>
                 <SubContainer>
                     <h1>{film.original_title}</h1>
+                    {user.success !== undefined ?
+                        <>
+                            {
+                                fav.findIndex(item => item.id === film.id) !== -1 ?
+                                    <Tooltip title="Like">
+                                        <Button onClick={() => { dispatch(favorite(user, film)) }}><FavoriteIcon /></Button>
+                                    </Tooltip> :
+                                    <Tooltip title="Unlike">
+                                        <Button onClick={() => { dispatch(favorite(user, film)) }}><FavoriteBorderIcon /></Button>
+                                    </Tooltip>
+                            }
+
+                            {
+                                watchList.findIndex(item => item.id === film.id) !== -1 ?
+                                    <Tooltip title="Remove from watchlist">
+                                        <Button onClick={() => dispatch(watchlist(user, film))}><VisibilityOffIcon /></Button>
+                                    </Tooltip> :
+                                    <Tooltip title="Add to watchlist">
+                                        <Button onClick={() => dispatch(watchlist(user, film))}><VisibilityIcon /></Button>
+                                    </Tooltip>
+                            }
+                            {rates.findIndex(item => item.id === film.id) !== -1 ?
+                                <Rating
+                                    name="customized-empty"
+                                    defaultValue={rates[rates.findIndex(item => item.id === film.id)].rate}
+                                    precision={0.5}
+                                    emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                                    readOnly
+                                /> :
+                                <Rating
+                                    name="customized-empty"
+                                    defaultValue={0}
+                                    precision={0.5}
+                                    emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                                    onChange={(event, newValue) => {
+                                        dispatch(rateMovie(film, newValue, user))
+                                    }}
+                                />
+                            }
+
+                        </> : null
+                    }
                     <p>{film.overview}</p>
+                    <p>Users Rating:</p>
+                    <Rating
+                        name="customized-empty"
+                        defaultValue={film.vote_average / 2}
+                        precision={0.5}
+                        readOnly
+                        emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                    />
                     <p>Date : {moment(film.release_date).format('DD MMM YYYY')}</p>
                     <p>Budget : {film.budget}</p>
                     <p>Revenu : {film.revenue}</p>
