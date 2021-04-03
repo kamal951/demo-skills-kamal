@@ -1,7 +1,7 @@
 import { Button, Grid, TextField } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import { useState } from "react";
-import { getFilmsWithSearchedText } from "../api";
+import { getFilmsWithSearchedText } from "../api/api";
 import CardMovie from "./cardMovie";
 
 export default function SearchTab() {
@@ -42,13 +42,13 @@ export default function SearchTab() {
                 {result !== undefined ? result.map((i) => {
                     return (
                         <>
-                            <Grid item xs={12} md={3}>
+                            <Grid key={"search-"+i.id} item xs={12} md={4}>
                                 <CardMovie detail={i} />
                             </Grid>
                         </>
                     )
                 }) : null}
-                {totalPages > 0 ? <Pagination count={totalPages} onChange={handleChangePage} /> : null}
+                {totalPages > 1 ? <Pagination count={totalPages} onChange={handleChangePage} /> : null}
             </Grid>
 
         </div>

@@ -9,7 +9,7 @@ import Chip from '@material-ui/core/Chip';
 import Pagination from '@material-ui/lab/Pagination';
 
 import { useEffect, useState } from 'react'
-import { getSeriesFromApi } from '../api'
+import { getSeriesFromApi } from '../api/api'
 import { Grid } from '@material-ui/core';
 import Link from 'next/link';
 import moment from 'moment';
@@ -47,7 +47,6 @@ export default function HomeSerie() {
 
     useEffect(() => {
         getSeriesFromApi(page).then(r => {
-            console.log(r)
             return setSeries(r)
         })
     }, [page])
@@ -61,7 +60,7 @@ export default function HomeSerie() {
         <Grid container justify="center" spacing={3}>
             {series.results !== undefined ?  series.results.map((item) => {
                 return (
-                    <Grid item xs={12} md={3}>
+                    <Grid key={"serie-"+item.id} item xs={12} md={4}>
                         <Card className={classes.root} variant="outlined">
                             <CardContent>
                                 <CardMedia

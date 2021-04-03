@@ -1,4 +1,4 @@
-const API_TOKEN = "e0c04d82cfe80d37f57eecacaaebb02a"
+const API_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN
 
 export function getFilmsFromApi(page) {
     const url = 'https://api.themoviedb.org/3/movie/popular?api_key=' + API_TOKEN + '&language=en&page=' + page

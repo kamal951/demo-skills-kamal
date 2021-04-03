@@ -8,7 +8,7 @@ import moment from 'moment'
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { useDispatch, useSelector } from 'react-redux'
-import { favorite, rateMovie, watchlist } from '../../redux/actions/userAction'
+import { addWatchlist, favorite, rateMovie } from '../../redux/actions/userAction'
 import { Rating } from '@material-ui/lab'
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Header from '../../components/header'
@@ -84,10 +84,10 @@ export default function Film({ film, credit }) {
                             {
                                 watchList.findIndex(item => item.id === film.id) !== -1 ?
                                     <Tooltip title="Remove from watchlist">
-                                        <Button onClick={() => dispatch(watchlist(user, film))}><VisibilityOffIcon /></Button>
+                                        <Button onClick={() => dispatch(addWatchlist(user, film))}><VisibilityOffIcon /></Button>
                                     </Tooltip> :
                                     <Tooltip title="Add to watchlist">
-                                        <Button onClick={() => dispatch(watchlist(user, film))}><VisibilityIcon /></Button>
+                                        <Button onClick={() => dispatch(addWatchlist(user, film))}><VisibilityIcon /></Button>
                                     </Tooltip>
                             }
                             {rates.findIndex(item => item.id === film.id) !== -1 ?

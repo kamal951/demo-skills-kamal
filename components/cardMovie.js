@@ -12,10 +12,11 @@ import { Button, Grid, Tooltip } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { connect, useSelector } from 'react-redux';
-import { favorite, watchlist } from '../redux/actions/userAction';
+import { addFavorite, removeFavorite, addWatchlist, removeWatchlist } from '../redux/actions/userAction';
 import { useDispatch } from 'react-redux';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles({
     root: {
@@ -36,17 +37,20 @@ const useStyles = makeStyles({
         marginBottom: 12,
     },
     media: {
-        height: 0,
         paddingTop: '56.25%', // 16:9
     },
 });
 
 const CardMovie = props => {
     const classes = useStyles();
-    const user = useSelector(state => state.userReducer.user)
+    const user = useSelector(state => state.userReducer.user);
     const watchList = useSelector(state => state.userReducer.movieWatchlist)
     const fav = useSelector(state => state.userReducer.fav)
+    const login_type = useSelector(state => state.userReducer.login_type)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+    }, [user, watchList, fav])
 
     return (
         <>
@@ -55,6 +59,7 @@ const CardMovie = props => {
                     <CardMedia
                         className={classes.media}
                         image={"https://image.tmdb.org/t/p/w300" + props.detail.backdrop_path}
+                        width="200px"
                         title="img film"
                     />
                     <Grid container>
@@ -68,31 +73,29 @@ const CardMovie = props => {
                             </Typography>
                             <Chip label={props.detail.vote_average * 10 + "%"} />
                         </Grid>
-                        {user.success !== undefined ?
+                        {login_type === "user" ?
                             <>
                                 <Grid item md={2}>
                                     {
                                         fav.findIndex(item => item.id === props.detail.id) !== -1 ?
-                                            <Tooltip title="Like">
-                                                <Button onClick={() => { dispatch(favorite(user, props.detail)) }}><FavoriteIcon /></Button>
-                                            </Tooltip> :
                                             <Tooltip title="Unlike">
-                                                <Button onClick={() => { dispatch(favorite(user, props.detail)) }}><FavoriteBorderIcon /></Button>
+                                                <Button onClick={() => { dispatch(removeFavorite(user, props.detail)) }}><FavoriteIcon /></Button>
+                                            </Tooltip> :
+                                            <Tooltip title="Like">
+                                                <Button onClick={() => { dispatch(addFavorite(user, props.detail)) }}><FavoriteBorderIcon /></Button>
                                             </Tooltip>
                                     }
                                 </Grid>
                                 <Grid item md={2}>
-
                                     {
                                         watchList.findIndex(item => item.id === props.detail.id) !== -1 ?
                                             <Tooltip title="Remove from watchlist">
-                                                <Button onClick={() => dispatch(watchlist(user, props.detail))}><VisibilityOffIcon /></Button>
+                                                <Button onClick={() => dispatch(removeWatchlist(user, props.detail))}><VisibilityOffIcon /></Button>
                                             </Tooltip> :
                                             <Tooltip title="Add to watchlist">
-                                                <Button onClick={() => dispatch(watchlist(user, props.detail))}><VisibilityIcon /></Button>
+                                                <Button onClick={() => dispatch(addWatchlist(user, props.detail))}><VisibilityIcon /></Button>
                                             </Tooltip>
                                     }
-
                                 </Grid>
                             </> : null
                         }
@@ -100,9 +103,7 @@ const CardMovie = props => {
                 </CardContent>
                 <CardActions>
                     <Link href={"/film/" + props.detail.id}>
-                        <a>
-                            Learn More
-                                    </a>
+                        <a>Learn More</a>
                     </Link>
                 </CardActions>
             </Card>
@@ -110,4 +111,4 @@ const CardMovie = props => {
     )
 }
 
-export default connect(({ movieWatchlist }) => ({ movieWatchlist }), { watchlist })(CardMovie);
+export default connect(({ movieWatchlist }) => ({ movieWatchlist }), { addWatchlist })(CardMovie);
