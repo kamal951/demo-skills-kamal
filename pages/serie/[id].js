@@ -1,7 +1,7 @@
 import moment from 'moment'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { getSerieByIdFromApi, getAllSeriesFromApi, getGenresSeriesById, getSerieCredit } from '../../api'
+import { getSerieByIdFromApi, getAllSeriesFromApi, getGenresSeriesById, getSerieCredit } from '../../api/api'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import CardActor from '../../components/cardActor'

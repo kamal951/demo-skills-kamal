@@ -1,7 +1,7 @@
 import { Button, Grid, makeStyles, Tooltip } from '@material-ui/core'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { getFilmByIdFromApi, getFilmCredit, getAllFilmsFromApi, getGenresFilmById } from '../../api'
+import { getFilmByIdFromApi, getFilmCredit, getAllFilmsFromApi, getGenresFilmById } from '../../api/api'
 import CardActor from '../../components/cardActor'
 import styled from 'styled-components'
 import moment from 'moment'
