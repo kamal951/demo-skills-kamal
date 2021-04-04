@@ -10,11 +10,15 @@ export const userService = {
     addToFavorite,
     removeFromFavorite,
     getPageWatchlist,
-    getPageFavorites
+    getPageFavorites,
+    rate
 };
 
 const baseUrl = "https://api.themoviedb.org/3"
 
+/*
+* ===================== LOGIN =====================
+*/
 function getToken() {
     const url = baseUrl + '/authentication/token/new?api_key=' + api_token
     return fetch(url)
@@ -110,8 +114,11 @@ async function login() {
     user.initialWatchlist = watchlist
 
     const favorites = await getFavorites(user)
-    user.initialFavorites = favorites.results
-    console.log(favorites)
+    user.initialFavorites = favorites
+    
+    const rates = await getRate(user)
+    user.rates = rates
+
     return user
 }
 
@@ -126,10 +133,35 @@ async function loginAsGuest() {
     // Get Permissions
     const session = await getGuestSession(token.request_token)
     
-    user.session_id = session.session_id
+    user.session_id = session.guest_session_id
+
+    user.login_type = "guest"
+
+    user.rates = []
     
     return user
 }
+
+function logout(user) {
+    const url = 'https://api.themoviedb.org/3/authentication/session?api_key=' + api_token
+
+    return fetch(url, {
+        method: "DELETE",
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "session_id": user.session_id
+        })
+    })
+        .then((resp) => resp.json())
+        .catch((e) => console.error(e))
+}
+
+/*
+* ===================== WATCHLIST =====================
+*/
 
 function getPageWatchlist(user, page){
     const url = baseUrl + '/account/' + user.userDetails.id + '/watchlist/movies?api_key=' + api_token + '&session_id=' + user.session_id + "&page=" + page
@@ -145,26 +177,16 @@ async function getWatchlist(user){
     let page = await getPageWatchlist(user, 1)
 
     watchlist = page.results
-    console.log("1",page)
+    
     for(let i = 2; i < page.total_pages; i++){
         page = await getPageWatchlist(user, i)
         for(let j = 0; j < page.results; j++){
             watchlist.push(page.results[j])
         }
     }
-    console.log("2",watchlist)
+    
     return watchlist
 }
-
-function getFavorites(user){
-    const url = baseUrl + '/account/' + user.userDetails.id + '/favorite/movies?api_key=' + api_token + '&session_id=' + user.session_id
-    return fetch(url)
-        .then(handleResponse)
-        .then(resp => {
-            return resp;
-        });
-}
-
 
 function addToWatchlist(user, movie) {
     const url = 'https://api.themoviedb.org/3/account/' + user.userDetails.id + '/watchlist?api_key=' + api_token + '&session_id=' + user.session_id
@@ -208,6 +230,10 @@ function removeFromWatchlist(user, movie) {
         });
 }
 
+/*
+* ===================== FAVORITES =====================
+*/
+
 function getPageFavorites(user, page){
     const url = baseUrl + '/account/' + user.userDetails.id + '/favorite/movies?api_key=' + api_token + '&session_id=' + user.session_id + "&page=" + page
     return fetch(url)
@@ -215,6 +241,22 @@ function getPageFavorites(user, page){
         .then(resp => {
             return resp;
         });
+}
+
+async function getFavorites(user){
+    let favorites = []
+    let page = await getPageFavorites(user, 1)
+
+    favorites = page.results
+    
+    for(let i = 2; i < page.total_pages; i++){
+        page = await getPageFavorites(user, i)
+        for(let j = 0; j < page.results; j++){
+            favorites.push(page.results[j])
+        }
+    }
+    
+    return favorites
 }
 
 function addToFavorite(user, movie) {
@@ -259,22 +301,62 @@ function removeFromFavorite(user, movie) {
         });
 }
 
-function logout(user) {
-    const url = 'https://api.themoviedb.org/3/authentication/session?api_key=' + api_token
+function rate(movie, user, note, login_type){
+    let url = ""
+    if(login_type === "guest"){
+        url = 'https://api.themoviedb.org/3/movie/' + movie.id + '/rating?api_key=' + api_token + '&guest_session_id=' + user.session_id
+    }else{
+        url = 'https://api.themoviedb.org/3/movie/' + movie.id + '/rating?api_key=' + api_token + '&session_id=' + user.session_id
+    }
 
     return fetch(url, {
-        method: "DELETE",
+        method: "POST",
         headers: {
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            "session_id": user.session_id
+            "value": note
         })
     })
-        .then((resp) => resp.json())
-        .catch((e) => console.error(e))
+        .then(handleResponse)
+        .then(resp => {
+            return resp;
+        });
 }
+
+function getPageRate(user, page){
+    const url = baseUrl + '/account/'+ user.userDetails.id +'/rated/movies?api_key=' + api_token + '&session_id=' + user.session_id + '&page=' + page
+
+    return fetch(url)
+        .then(handleResponse)
+        .then(resp => {
+            return resp;
+        });
+}
+
+async function getRate(user){
+    let rates = []
+    let page = await getPageRate(user, 1)
+
+    rates = page.results
+    
+    for(let i = 2; i < page.total_pages; i++){
+        page = await getPageRate(user, i)
+        for(let j = 0; j < page.results; j++){
+            rates.push(page.results[j])
+        }
+    }
+
+    let tabRates = [] 
+    for(let i = 0; i < rates.length; i++){
+        tabRates.push({id: rates[i].id, rate: rates[i].rating})
+    }
+    
+    return tabRates
+}
+
+
 
 function handleResponse(response) {
     return response.text().then(text => {

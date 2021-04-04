@@ -32,7 +32,8 @@ const userReducer = (state = initialState, action) => {
                 user: action.value,
                 login_type: action.login_type,
                 movieWatchlist: action.value.initialWatchlist,
-                fav: action.value.initialFavorites
+                fav: action.value.initialFavorites,
+                rates: action.value.rates
             }
             return nextState || state
         }
@@ -51,7 +52,8 @@ const userReducer = (state = initialState, action) => {
                 movieWatchlist: [],
                 fav: [],
                 watchlist_page: {results: [], total_pages: 0},
-                favorites_page: {results: [], total_pages: 0}
+                favorites_page: {results: [], total_pages: 0},
+                rates: []
             }
             return nextState || state
         }

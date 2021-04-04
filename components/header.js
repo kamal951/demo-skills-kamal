@@ -10,6 +10,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { login, logout, loginAsGuest } from '../redux/actions/userAction';
 import styled from 'styled-components'
 import Loading from './loading';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -69,47 +71,50 @@ export default function Header() {
 	const handleLoginAsGuest = () => {
 		dispatch(loginAsGuest())
 	}
-	
+
 
 	const dispatch = useDispatch()
 
 	return (
-		<div className={classes.root}>
-			<AppBar position="static">
-				<Toolbar>
-					<Typography variant="h6" className={classes.title}>Demo Skills Kamal</Typography>
-					{user && Object.keys(user).length !== 0 ?
-						<Button color="inherit" onClick={() => dispatch(logout(user))}>Logout</Button>
-						: <Button color="inherit" onClick={() => handleOpen()} >Login</Button>
-					}
-				</Toolbar>
-			</AppBar>
-			<Modal
-				style={{
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center'
-				}}
-				open={open}
-				onClose={handleClose}
-				aria-labelledby="simple-modal-title"
-				aria-describedby="simple-modal-description"
-			>
-				<ModalContent>
-					<Avatar>
-						<AccountCircleIcon />
-					</Avatar>
-					<Typography component="h1" variant="h5">Log in</Typography>
-					<Hr />
-					{is_login_loading ?
-						<Loading /> :
-						<>
-							<Button style={{marginBottom: "20px"}} variant="outlined" color="inherit" onClick={() => handleLogin()} >Login with TMDB</Button>
-							<Button variant="outlined" color="inherit" onClick={() => handleLoginAsGuest()} >Login as guest</Button>
-						</>
-					}
-				</ModalContent>
-			</Modal>
-		</div>
+		<>
+			<div className={classes.root}>
+				<AppBar position="static">
+					<Toolbar>
+						<Typography variant="h6" className={classes.title}>Demo Skills Kamal</Typography>
+						{user && Object.keys(user).length !== 0 ?
+							<Button color="inherit" onClick={() => dispatch(logout(user))}>Logout</Button>
+							: <Button color="inherit" onClick={() => handleOpen()} >Login</Button>
+						}
+					</Toolbar>
+				</AppBar>
+				<Modal
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}
+					open={open}
+					onClose={handleClose}
+					aria-labelledby="simple-modal-title"
+					aria-describedby="simple-modal-description"
+				>
+					<ModalContent>
+						<Avatar>
+							<AccountCircleIcon />
+						</Avatar>
+						<Typography component="h1" variant="h5">Log in</Typography>
+						<Hr />
+						{is_login_loading ?
+							<Loading /> :
+							<>
+								<Button style={{ marginBottom: "20px" }} variant="outlined" color="inherit" onClick={() => handleLogin()} >Login with TMDB</Button>
+								<Button variant="outlined" color="inherit" onClick={() => handleLoginAsGuest()} >Login as guest</Button>
+							</>
+						}
+					</ModalContent>
+				</Modal>
+			</div>
+			<ToastContainer autoClose={2000} style={{ paddingTop: "60px" }} />
+		</>
 	)
 }

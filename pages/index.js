@@ -9,8 +9,7 @@ import SearchTab from '../components/searchTab';
 import { WatchlistTab } from '../components/watchlistTab';
 import { LikesTab } from '../components/likesTab';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -65,7 +64,6 @@ export default function Home() {
 			</Head>
 
 			<Header />
-			<ToastContainer autoClose={2000} style={{ paddingTop: "60px" }} />
 			<AppBar position="static">
 				<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
 					<Tab label="Films" id="simple-tab-1" aria-controls="simple-tabpanel-1" />

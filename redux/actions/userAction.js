@@ -36,7 +36,7 @@ export function login() {
                         failure(error)
                     )
                 })
-                
+
         function success(user) { toast.success("LOGIN SUCCESS"); return { type: userAction.LOGIN_SUCCESS, value: user, login_type: "user" } }
         function failure(error) { toast.error("LOGIN FAILURE : " + error); return { type: userAction.LOGIN_FAILURE } }
     };
@@ -60,7 +60,7 @@ export function loginAsGuest() {
                         failure(error)
                     )
                 })
-                
+
         function success(user) { toast.success("LOGIN SUCCESS"); return { type: userAction.LOGIN_SUCCESS, value: user, login_type: "guest" } }
         function failure(error) { toast.error("LOGIN FAILURE : " + error); return { type: userAction.LOGIN_FAILURE } }
     };
@@ -94,7 +94,7 @@ export function addWatchlist(user, movie) {
                     failure(error)
                 })
 
-        function success(movie) { toast.success("Movie successfully added to watchlist");  return { type: userAction.ADD_WATCHLIST, value: movie } }
+        function success(movie) { toast.success("Movie successfully added to watchlist"); return { type: userAction.ADD_WATCHLIST, value: movie } }
         function failure(error) { toast.error("Error : " + error) }
     };
 }
@@ -111,7 +111,7 @@ export function removeWatchlist(user, movie) {
                     failure(error)
                 })
 
-        function success(movie) { toast.success("Movie successfully removed from watchlist");  return { type: userAction.REMOVE_WATCHLIST, value: movie } }
+        function success(movie) { toast.success("Movie successfully removed from watchlist"); return { type: userAction.REMOVE_WATCHLIST, value: movie } }
         function failure(error) { toast.error("Error : " + error) }
     };
 }
@@ -159,7 +159,7 @@ export function getFavorite(user) {
                 error => {
                     failure(error)
                 })
-        function success(movie) { toast.success("Watchlist populated");  return { type: userAction.GET_WATCHLIST, value: movie.results } }
+        function success(movie) { toast.success("Watchlist populated"); return { type: userAction.GET_WATCHLIST, value: movie.results } }
         function failure(error) { toast.error("Error : " + error) }
     };
 }
@@ -176,7 +176,7 @@ export function addFavorite(user, movie) {
                     failure(error)
                 })
 
-        function success(movie) { toast.success("Movie successfully added to favorites");  return { type: userAction.ADD_FAVORITE, value: movie } }
+        function success(movie) { toast.success("Movie successfully added to favorites"); return { type: userAction.ADD_FAVORITE, value: movie } }
         function failure(error) { toast.error("Error : " + error) }
     };
 }
@@ -193,7 +193,7 @@ export function removeFavorite(user, movie) {
                     failure(error)
                 })
 
-        function success(movie) { toast.success("Movie successfully removed from favorites");  return { type: userAction.REMOVE_FAVORITE, value: movie } }
+        function success(movie) { toast.success("Movie successfully removed from favorites"); return { type: userAction.REMOVE_FAVORITE, value: movie } }
         function failure(error) { toast.error("Error : " + error) }
     };
 }
@@ -228,27 +228,21 @@ export const favorite = (user, fav) => {
 
 
 
-export const rateMovie = (movie, rate, user) => {
+export const rateMovie = (movie, note, user, login_type) => {
     return async (dispatch) => {
-        const url = 'https://api.themoviedb.org/3/movie/' + movie.id + '/rating?api_key=' + api_token + '&guest_session_id=' + user.guest_session_id
-        console.log(rate)
-        await fetch(url, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "value": rate
-            })
-        })
-            .then((response) => response.json())
-            .catch((e) => console.error(e))
+        await userService.rate(movie, user, note, login_type)
+            .then(
+                resp => {
+                    dispatch(success())
+                },
+                error => {
+                    failure(error)
+                })
 
-        dispatch({
-            type: userAction.RATE,
-            value: { id: movie.id, rate: rate }
+        function success() { 
+            toast.success("Rate success"); 
+            return { type: userAction.RATE, value: {id: movie.id, rate: note} } 
         }
-        );
+        function failure(error) { toast.error("Error : " + error) }
     };
 }

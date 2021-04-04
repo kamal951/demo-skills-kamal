@@ -8,7 +8,7 @@ import moment from 'moment'
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { useDispatch, useSelector } from 'react-redux'
-import { addWatchlist, favorite, rateMovie } from '../../redux/actions/userAction'
+import { addWatchlist, removeWatchlist, removeFavorite, rateMovie } from '../../redux/actions/userAction'
 import { Rating } from '@material-ui/lab'
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Header from '../../components/header'
@@ -26,6 +26,7 @@ const SubContainer = styled.div`
 `
 
 export default function Film({ film, credit }) {
+    const { user, rates, movieWatchlist, fav, login_type } = useSelector(state => state.userReducer)
 
     const [genres, setGenres] = useState([])
     useEffect(() => {
@@ -43,12 +44,6 @@ export default function Film({ film, credit }) {
         })
     }, [])
 
-
-    const user = useSelector(state => state.userReducer.user)
-    const rates = useSelector(state => state.userReducer.rates)
-    const watchList = useSelector(state => state.userReducer.movieWatchlist)    
-    const fav = useSelector(state => state.userReducer.fav)
-
     const dispatch = useDispatch()
 
     return (
@@ -56,9 +51,7 @@ export default function Film({ film, credit }) {
             <Header />
             <div style={{ marginLeft: "50px", marginTop: "20px" }}>
                 <Link href="/" >
-                    <a >
-                        Retour
-              </a>
+                    <a>Retour</a>
                 </Link>
             </div>
 
@@ -69,47 +62,49 @@ export default function Film({ film, credit }) {
                 </div>
                 <SubContainer>
                     <h1>{film.original_title}</h1>
-                    {user.success !== undefined ?
+                    {login_type === "user" ?
                         <>
                             {
                                 fav.findIndex(item => item.id === film.id) !== -1 ?
                                     <Tooltip title="Like">
-                                        <Button onClick={() => { dispatch(favorite(user, film)) }}><FavoriteIcon /></Button>
+                                        <Button onClick={() => { dispatch(addFavorite(user, film)) }}><FavoriteIcon /></Button>
                                     </Tooltip> :
                                     <Tooltip title="Unlike">
-                                        <Button onClick={() => { dispatch(favorite(user, film)) }}><FavoriteBorderIcon /></Button>
+                                        <Button onClick={() => { dispatch(removeFavorite(user, film)) }}><FavoriteBorderIcon /></Button>
                                     </Tooltip>
                             }
 
                             {
-                                watchList.findIndex(item => item.id === film.id) !== -1 ?
+                                movieWatchlist.findIndex(item => item.id === film.id) !== -1 ?
                                     <Tooltip title="Remove from watchlist">
-                                        <Button onClick={() => dispatch(addWatchlist(user, film))}><VisibilityOffIcon /></Button>
+                                        <Button onClick={() => dispatch(removeWatchlist(user, film))}><VisibilityOffIcon /></Button>
                                     </Tooltip> :
                                     <Tooltip title="Add to watchlist">
                                         <Button onClick={() => dispatch(addWatchlist(user, film))}><VisibilityIcon /></Button>
                                     </Tooltip>
                             }
-                            {rates.findIndex(item => item.id === film.id) !== -1 ?
-                                <Rating
-                                    name="customized-empty"
-                                    defaultValue={rates[rates.findIndex(item => item.id === film.id)].rate}
-                                    precision={0.5}
-                                    emptyIcon={<StarBorderIcon fontSize="inherit" />}
-                                    readOnly
-                                /> :
-                                <Rating
-                                    name="customized-empty"
-                                    defaultValue={0}
-                                    precision={0.5}
-                                    emptyIcon={<StarBorderIcon fontSize="inherit" />}
-                                    onChange={(event, newValue) => {
-                                        dispatch(rateMovie(film, newValue, user))
-                                    }}
-                                />
-                            }
-
                         </> : null
+                    }
+                    {login_type === "user" || login_type === "guest" ?
+                        rates.findIndex(item => item.id === film.id) !== -1 ?
+                            <Rating
+                                name="customized-empty"
+                                defaultValue={rates[rates.findIndex(item => item.id === film.id)].rate / 2}
+                                precision={0.5}
+                                emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                                onChange={(event, newValue) => {
+                                    dispatch(rateMovie(film, newValue * 2, user, login_type))
+                                }}
+                            /> :
+                            <Rating
+                                name="customized-empty"
+                                defaultValue={0}
+                                precision={0.5}
+                                emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                                onChange={(event, newValue) => {
+                                    dispatch(rateMovie(film, newValue * 2, user, login_type))
+                                }}
+                            /> : null
                     }
                     <p>{film.overview}</p>
                     <p>Users Rating:</p>
