@@ -8,10 +8,9 @@ import moment from 'moment'
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { useDispatch, useSelector } from 'react-redux'
-import { addWatchlist, removeWatchlist, removeFavorite, rateMovie } from '../../redux/actions/userAction'
+import { addWatchlist, removeWatchlist, removeFavorite, rateMovie, addFavorite } from '../../redux/actions/userAction'
 import { Rating } from '@material-ui/lab'
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import Header from '../../components/header'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
@@ -48,8 +47,7 @@ export default function Film({ film, credit }) {
 
     return (
         <>
-            <Header />
-            <div style={{ marginLeft: "50px", marginTop: "20px" }}>
+            <div style={{ marginLeft: "50px", marginTop: "10px", marginBottom: "30px" }}>
                 <Link href="/" >
                     <a>Retour</a>
                 </Link>
@@ -66,12 +64,13 @@ export default function Film({ film, credit }) {
                         <>
                             {
                                 fav.findIndex(item => item.id === film.id) !== -1 ?
-                                    <Tooltip title="Like">
-                                        <Button onClick={() => { dispatch(addFavorite(user, film)) }}><FavoriteIcon /></Button>
-                                    </Tooltip> :
                                     <Tooltip title="Unlike">
-                                        <Button onClick={() => { dispatch(removeFavorite(user, film)) }}><FavoriteBorderIcon /></Button>
+                                        <Button onClick={() => { dispatch(removeFavorite(user, film)) }}><FavoriteIcon /></Button>
+                                    </Tooltip> :
+                                    <Tooltip title="Like">
+                                        <Button onClick={() => { dispatch(addFavorite(user, film)) }}><FavoriteBorderIcon /></Button>
                                     </Tooltip>
+
                             }
 
                             {

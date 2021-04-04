@@ -19,11 +19,6 @@ const useStyles = makeStyles({
     root: {
         minWidth: 275,
     },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
     title: {
         fontSize: 20,
     },
@@ -51,44 +46,48 @@ export default function HomeSerie() {
         })
     }, [page])
 
-    
+
     const handleChange = (event, value) => {
         setPage(value)
     }
 
     return (
-        <Grid container justify="center" spacing={3}>
-            {series.results !== undefined ?  series.results.map((item) => {
-                return (
-                    <Grid key={"serie-"+item.id} item xs={12} md={4}>
-                        <Card className={classes.root} variant="outlined">
-                            <CardContent>
-                                <CardMedia
-                                    className={classes.media}
-                                    image={"https://image.tmdb.org/t/p/w300" + item.backdrop_path}
-                                    title="img serie"
-                                />
-                                <Typography className={classes.title} color="textPrimary" gutterBottom>
-                                    {item.original_name}
-                                </Typography>
-                                <Typography className={classes.date} color="textSecondary" gutterBottom>
-                                    {moment(item.first_air_date).format("DD MMM YYYY")}
-                                </Typography>
-                                <Chip label={item.vote_average * 10 + "%"} />
-                            </CardContent>
-                            <CardActions>
-                                <Link href={"/serie/" + item.id}>
-                                    <a>
-                                        Learn More
+        <Grid container justify="center" spacing={2}>
+            <Grid container item spacing={1}>
+                {series.results !== undefined ? series.results.map((item) => {
+                    return (
+                        <Grid key={"serie-" + item.id} item xs={12} md={3}>
+                            <Card className={classes.root} variant="outlined">
+                                <CardContent>
+                                    <CardMedia
+                                        className={classes.media}
+                                        image={"https://image.tmdb.org/t/p/w300" + item.backdrop_path}
+                                        title="img serie"
+                                    />
+                                    <Typography className={classes.title} color="textPrimary" gutterBottom>
+                                        {item.original_name}
+                                    </Typography>
+                                    <Typography className={classes.date} color="textSecondary" gutterBottom>
+                                        {moment(item.first_air_date).format("DD MMM YYYY")}
+                                    </Typography>
+                                    <Chip label={item.vote_average * 10 + "%"} />
+                                </CardContent>
+                                <CardActions>
+                                    <Link href={"/serie/" + item.id}>
+                                        <a>
+                                            Learn More
                                     </a>
-                                </Link>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                )
-            }) : null
-        }
-        <Pagination count={series !== undefined ? series.total_pages : null} onChange={handleChange}/>
+                                    </Link>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    )
+                }) : null
+                }
+            </Grid>
+            <Grid item>
+                <Pagination count={series !== undefined ? series.total_pages : null} onChange={handleChange} />
+            </Grid>
         </Grid>
     )
 }

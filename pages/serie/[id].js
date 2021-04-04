@@ -33,7 +33,7 @@ export default function Serie({ serie, credit }) {
 
     return (
         <>
-            <div style={{ marginLeft: "50px", marginTop: "20px" }}>
+            <div style={{ marginLeft: "50px", marginTop: "10px", marginBottom: "30px" }}>
                 <Link href="/">
                     <a>
                         Retour

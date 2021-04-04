@@ -24,7 +24,7 @@ export default function HomeFilm() {
     }
 
     return (
-        <Grid container justify="center" spacing={4}>
+        <Grid container justify="center" spacing={1}>
             {films !== undefined ? films.results.map((item) => {
                 return (
                     <Grid item xs={12} md={3} key={"movie"+item.id}>

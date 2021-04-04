@@ -24,7 +24,7 @@ export function LikesTab() {
 
     return (
         <Grid container justify="center">
-            <Grid item container justify="center" spacing={3}>
+            <Grid item container justify="center" spacing={1}>
                 {favorites_page.results.length > 0 ?
                     favorites_page.results.map((item) => {
                         return (
@@ -33,7 +33,7 @@ export function LikesTab() {
                             </Grid>
                         )
                     }) :
-                    <Typography component="h1" variant="h5">No movies in the watchlist!</Typography>}
+                    <Typography component="h1" variant="h5">No movies in the favorites list!</Typography>}
             </Grid>
             {favorites_page !== undefined && favorites_page.total_pages > 1 ?
                 <Grid item >

@@ -33,16 +33,16 @@ export default function SearchTab() {
     }
 
     return (
-        <div style={{ textAlign: "center" }}>
-            <TextField id="outlined-basic" style={{ width: "80%" }} label="Search" variant="outlined" onChange={handleChange} />
-            <Button onClick={handleClick}>Search</Button>
+        <div style={{  width: "100%" }}>
+            <TextField id="outlined-basic" style={{ width: "80%", marginLeft: "10%" }} label="Search" variant="outlined" onChange={handleChange} />
+            <Button style={{marginTop: "10px"}} onClick={handleClick}>Search</Button>
             <br />
             <br />
-            <Grid container justify="center" spacing={3}>
+            <Grid container justify="center" spacing={1}>
                 {result !== undefined ? result.map((i) => {
                     return (
                         <>
-                            <Grid key={"search-"+i.id} item xs={12} md={4}>
+                            <Grid key={"search-"+i.id} item xs={12} md={3}>
                                 <CardMovie detail={i} />
                             </Grid>
                         </>

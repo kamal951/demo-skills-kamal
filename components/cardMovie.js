@@ -59,7 +59,6 @@ const CardMovie = props => {
                     <CardMedia
                         className={classes.media}
                         image={"https://image.tmdb.org/t/p/w300" + props.detail.backdrop_path}
-                        width="200px"
                         title="img film"
                     />
                     <Grid container>
@@ -102,7 +101,7 @@ const CardMovie = props => {
                     </Grid>
                 </CardContent>
                 <CardActions>
-                    <Link href={"/film/" + props.detail.id}>
+                    <Link href={"/film/" + props.detail.id} passHref>
                         <a>Learn More</a>
                     </Link>
                 </CardActions>
