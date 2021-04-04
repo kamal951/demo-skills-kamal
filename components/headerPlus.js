@@ -234,6 +234,7 @@ export default function HeaderPlus(props) {
 					justifyContent: 'center'
 				}}
 				open={openModal}
+				disableBackdropClick={true}
 				onClose={handleClose}
 				aria-labelledby="simple-modal-title"
 				aria-describedby="simple-modal-description"
