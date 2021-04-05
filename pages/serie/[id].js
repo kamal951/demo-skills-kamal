@@ -85,6 +85,7 @@ export async function getStaticProps({ params }) {
     })
     
     return {
+        revalidate: 50,
         props: {
             serie: serieDetail,
             credits: credits,

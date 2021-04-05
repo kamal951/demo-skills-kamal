@@ -150,6 +150,7 @@ export async function getStaticProps({ params }) {
     })
 
     return {
+        revalidate: 50,
         props: {
             film: film,
             credit: credit,
