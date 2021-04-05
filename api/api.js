@@ -57,7 +57,7 @@ export function getSeriesFromApi(page) {
         .catch((e) => console.error(e))
 }
 
-export function getSerieByIdFromApi(serie_id) {
+export async function getSerieByIdFromApi(serie_id) {
     const url = 'https://api.themoviedb.org/3/tv/' + serie_id + '?api_key=' + API_TOKEN + '&language=en'
 
     return fetch(url)
@@ -74,7 +74,7 @@ export function getFilmByIdFromApi(movie_id) {
         .catch((e) => console.error(e))
 }
 
-export function getGenresFilmById(genre_id) {
+export function getGenresFilmById() {
     const url = 'https://api.themoviedb.org/3/genre/movie/list?api_key=' + API_TOKEN + '&language=en'
 
     return fetch(url)
@@ -86,7 +86,7 @@ export function getGenresFilmById(genre_id) {
 }
 
 
-export function getGenresSeriesById(genre_id) {
+export function getGenresSeriesById() {
     const url = 'https://api.themoviedb.org/3/genre/tv/list?api_key=' + API_TOKEN + '&language=en'
 
     return fetch(url)
