@@ -76,7 +76,7 @@ function getGuestSession(token) {
 }
 
 function getUserPermission(token) {
-    const urlUserLogin = 'https://www.themoviedb.org/authenticate/' + token
+    const urlUserLogin = 'https://www.themoviedb.org/authenticate/' + token + "?redirect_to=http://localhost:3000/close"
 
     var win = window.open(
         urlUserLogin,
