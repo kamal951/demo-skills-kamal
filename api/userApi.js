@@ -76,7 +76,7 @@ function getGuestSession(token) {
 }
 
 function getUserPermission(token) {
-    const urlUserLogin = 'https://www.themoviedb.org/authenticate/' + token + "?redirect_to=http://localhost:3000/close"
+    const urlUserLogin = 'https://www.themoviedb.org/authenticate/' + token + '?redirect_to=' + process.env.NEXT_PUBLIC_URL + '/close'
 
     var win = window.open(
         urlUserLogin,
@@ -99,14 +99,14 @@ async function login() {
 
     const user = {}
     user.request_token = token.request_token
-    
+
     // Get Permissions
     await getUserPermission(token.request_token)
-    
+
     // Create a new session_id with the athorized request token
     const session = await getSession(user.request_token)
     user.session_id = session.session_id
-    
+
     const userDetails = await getUserDetail(session.session_id)
     user.userDetails = userDetails
 
@@ -115,7 +115,7 @@ async function login() {
 
     const favorites = await getFavorites(user)
     user.initialFavorites = favorites
-    
+
     const rates = await getRate(user)
     user.rates = rates
 
@@ -129,16 +129,16 @@ async function loginAsGuest() {
 
     const user = {}
     user.request_token = token.request_token
-    
+
     // Get Permissions
     const session = await getGuestSession(token.request_token)
-    
+
     user.session_id = session.guest_session_id
 
     user.login_type = "guest"
 
     user.rates = []
-    
+
     return user
 }
 
@@ -163,7 +163,7 @@ function logout(user) {
 * ===================== WATCHLIST =====================
 */
 
-function getPageWatchlist(user, page){
+function getPageWatchlist(user, page) {
     const url = baseUrl + '/account/' + user.userDetails.id + '/watchlist/movies?api_key=' + api_token + '&session_id=' + user.session_id + "&page=" + page
     return fetch(url)
         .then(handleResponse)
@@ -172,19 +172,19 @@ function getPageWatchlist(user, page){
         });
 }
 
-async function getWatchlist(user){
+async function getWatchlist(user) {
     let watchlist = []
     let page = await getPageWatchlist(user, 1)
 
     watchlist = page.results
-    
-    for(let i = 2; i < page.total_pages; i++){
+
+    for (let i = 2; i < page.total_pages; i++) {
         page = await getPageWatchlist(user, i)
-        for(let j = 0; j < page.results; j++){
+        for (let j = 0; j < page.results; j++) {
             watchlist.push(page.results[j])
         }
     }
-    
+
     return watchlist
 }
 
@@ -234,7 +234,7 @@ function removeFromWatchlist(user, movie) {
 * ===================== FAVORITES =====================
 */
 
-function getPageFavorites(user, page){
+function getPageFavorites(user, page) {
     const url = baseUrl + '/account/' + user.userDetails.id + '/favorite/movies?api_key=' + api_token + '&session_id=' + user.session_id + "&page=" + page
     return fetch(url)
         .then(handleResponse)
@@ -243,19 +243,19 @@ function getPageFavorites(user, page){
         });
 }
 
-async function getFavorites(user){
+async function getFavorites(user) {
     let favorites = []
     let page = await getPageFavorites(user, 1)
 
     favorites = page.results
-    
-    for(let i = 2; i < page.total_pages; i++){
+
+    for (let i = 2; i < page.total_pages; i++) {
         page = await getPageFavorites(user, i)
-        for(let j = 0; j < page.results; j++){
+        for (let j = 0; j < page.results; j++) {
             favorites.push(page.results[j])
         }
     }
-    
+
     return favorites
 }
 
@@ -301,11 +301,11 @@ function removeFromFavorite(user, movie) {
         });
 }
 
-function rate(movie, user, note, login_type){
+function rate(movie, user, note, login_type) {
     let url = ""
-    if(login_type === "guest"){
+    if (login_type === "guest") {
         url = 'https://api.themoviedb.org/3/movie/' + movie.id + '/rating?api_key=' + api_token + '&guest_session_id=' + user.session_id
-    }else{
+    } else {
         url = 'https://api.themoviedb.org/3/movie/' + movie.id + '/rating?api_key=' + api_token + '&session_id=' + user.session_id
     }
 
@@ -325,8 +325,8 @@ function rate(movie, user, note, login_type){
         });
 }
 
-function getPageRate(user, page){
-    const url = baseUrl + '/account/'+ user.userDetails.id +'/rated/movies?api_key=' + api_token + '&session_id=' + user.session_id + '&page=' + page
+function getPageRate(user, page) {
+    const url = baseUrl + '/account/' + user.userDetails.id + '/rated/movies?api_key=' + api_token + '&session_id=' + user.session_id + '&page=' + page
 
     return fetch(url)
         .then(handleResponse)
@@ -335,24 +335,24 @@ function getPageRate(user, page){
         });
 }
 
-async function getRate(user){
+async function getRate(user) {
     let rates = []
     let page = await getPageRate(user, 1)
 
     rates = page.results
-    
-    for(let i = 2; i < page.total_pages; i++){
+
+    for (let i = 2; i < page.total_pages; i++) {
         page = await getPageRate(user, i)
-        for(let j = 0; j < page.results; j++){
+        for (let j = 0; j < page.results; j++) {
             rates.push(page.results[j])
         }
     }
 
-    let tabRates = [] 
-    for(let i = 0; i < rates.length; i++){
-        tabRates.push({id: rates[i].id, rate: rates[i].rating})
+    let tabRates = []
+    for (let i = 0; i < rates.length; i++) {
+        tabRates.push({ id: rates[i].id, rate: rates[i].rating })
     }
-    
+
     return tabRates
 }
 
@@ -361,13 +361,13 @@ async function getRate(user){
 function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
-        
+
         if (!response.ok) {
             const error = "Code " + data.status_code + " : " + data.status_message;
             return Promise.reject(error);
         }
-        if(data.success !== undefined){
-            if(!data.success){
+        if (data.success !== undefined) {
+            if (!data.success) {
                 const error = "Code " + data.status_code + " : " + data.status_message;
                 return Promise.reject(error);
             }
